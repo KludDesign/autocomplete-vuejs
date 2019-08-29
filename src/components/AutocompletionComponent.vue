@@ -1,8 +1,9 @@
 <template>
   <div>
     <h1>Autocompletion component</h1>
-    <div v-for="contryData in contriesData">
-      <p>{{ contryData.name }}</p>
+    <input id="input-search" type="text" v-model="textSearch" placeholder='Search...'>
+    <div v-for="contry in contries">
+      <p>{{ contry.name }}</p>
     </div>
   </div>
 </template>
@@ -13,7 +14,8 @@ import RestcountriesApi from '@/services/RestcountriesApi'
 export default {
   data () {
     return {
-      contriesData: null
+      textSearch: '',
+      contries: null
     }
   },
 
@@ -26,7 +28,7 @@ export default {
     // the contriesData variable
     async getContriesData () {
       const response = await RestcountriesApi.getAllContries()
-      this.contriesData = response.data
+      this.contries = response.data
     }
   }
 }
@@ -34,8 +36,9 @@ export default {
 
 <style lang="scss" scoped>
 
-$text-color: #94bbdc;
-$background-color: #f2f5f7;
+* {
+  font-family: Campton;
+}
 
 h1 {
   color: $text-color;
