@@ -1,16 +1,16 @@
 <template>
   <div id="app">
-    <AutocompletionComponent />
+    <AutocompleteComponent />
   </div>
 </template>
 
 <script>
-import AutocompletionComponent from './components/AutocompletionComponent.vue'
+import AutocompleteComponent from './components/AutocompleteComponent.vue'
 
 export default {
   name: 'app',
   components: {
-    AutocompletionComponent
+    AutocompleteComponent
   }
 }
 </script>
@@ -22,5 +22,9 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+
+body {
+  background-color: $background-color;
 }
 </style>
