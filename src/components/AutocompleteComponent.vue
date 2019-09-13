@@ -1,4 +1,4 @@
-<template>
+<v></v><template>
   <div class="autocomplete">
     <div class="search">
       <label for="autocomplete-input">Pays</label>
@@ -34,8 +34,7 @@
           :src="country.flag"
           :alt="country.name"
         />
-
-        {{ boldLetters(country.name) }}
+        <span class="country-name" v-html="boldFilter(country.name)"></span>
       </li>
     </ul>
 
@@ -122,9 +121,8 @@ export default {
     },
 
     // Function to bold dynamically the typed letters
-    boldLetters (value) {
-      value = value.toString()
-      return value.substring(0, this.textSearch.length).toUpperCase() + value.slice(this.textSearch.length)
+    boldFilter (value) {
+      return `<b>${value.substring(0, this.textSearch.length)}</b>${value.slice(this.textSearch.length)}`
     }
   },
 
@@ -193,7 +191,7 @@ export default {
 }
 
 .flag {
-  width: 20px;
+  height: 12px;
 }
 
 .scrollbar {
@@ -210,6 +208,10 @@ export default {
 .scrollbar::-webkit-scrollbar-thumb {
   background-color: $el-color;
   border-radius: 4px;
+}
+
+.country-name {
+  margin-left: 10px;
 }
 
 </style>
