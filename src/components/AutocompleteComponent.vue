@@ -18,18 +18,24 @@
     </div>
 
     <ul
-      class="autocomplete-result"
+      class="autocomplete-result scrollbar"
       v-show="onVisible"
+      ref="optionsList"
     >
       <li
         class="autocomplete-items"
         :class="{ 'is-active': i === arrowCounter }"
         v-for="(country, i) in filteredCountries"
         :key="i"
-        @click="setCountry(country.name)"
+        @click="onClick(country.name)"
       >
-        <img class="flag" :src="country.flag" :alt="country.name" />
-        {{ country.name }}
+        <img
+          class="flag"
+          :src="country.flag"
+          :alt="country.name"
+        />
+
+        {{ boldLetters(country.name) }}
       </li>
     </ul>
 
@@ -45,7 +51,8 @@ export default {
       textSearch: '',
       dataCountries: [],
       onVisible: false,
-      arrowCounter: -1
+      arrowCounter: -1,
+      itemHeight: 32
     }
   },
 
@@ -62,35 +69,62 @@ export default {
     },
 
     // Set the input area with the clicked value
-    setCountry (country) {
+    onClick (country) {
       this.textSearch = country
-      this.onVisible = false
-    },
-
-    // Close the list item when clicking out the input fiels
-    blur () {
-      setTimeout( () => this.onVisible = false, 200) // Need setTimeout in order to have setCountry @click event working
+      this.onVisible = false // Close the country list
     },
 
     // Hover the item below on the list
     onArrowDown () {
-      if (this.arrowCounter < this.filteredCountries.length) {
-        this.arrowCounter = this.arrowCounter + 1
+      if (this.arrowCounter < this.filteredCountries.length - 1) {
+        this.arrowCounter += 1
+        this.scrollToItem()
       }
     },
 
     // Hover the item under on the list
     onArrowUp () {
       if (this.arrowCounter > 0) {
-        this.arrowCounter = this.arrowCounter - 1
+        this.arrowCounter -= 1
+        this.scrollToItem()
       }
     },
 
     // Select the coresponding country when clicking on the space barre
     onSpace () {
       this.textSearch = this.filteredCountries[this.arrowCounter].name
-      this.onVisible = false
+      this.onVisible = false // Close the country list
       this.arrowCounter = -1
+      event.target.blur() // Unfocus the input after selected the element
+    },
+
+    // Close the list item when clicking out the input fiels
+    blur () {
+      if (this.filteredCountries.length < 1) {
+        // Need setTimeout in order to have onClick @click event working
+        setTimeout( () =>
+          this.textSearch = '', // Emptying the textSearch if the user didn't type an existing country
+          this.onVisible = false // Close the country list
+        , 200)
+      } else {
+        setTimeout( () =>
+          this.onVisible = false // Close the country list
+        , 200)
+      }
+      this.arrowCounter = -1 // Remove the active item if selected by arrow keys
+    },
+
+    // Function used to scroll when using arrow keys
+    scrollToItem () {
+      if ((this.arrowCounter + 1) > 0) {
+        this.$refs.optionsList.scrollTop = this.arrowCounter * this.itemHeight
+      }
+    },
+
+    // Function to bold dynamically the typed letters
+    boldLetters (value) {
+      value = value.toString()
+      return value.substring(0, this.textSearch.length).toUpperCase() + value.slice(this.textSearch.length)
     }
   },
 
@@ -129,11 +163,12 @@ export default {
     box-sizing: border-box;
     border: none;
     border-bottom: 1px solid $el-color;
+    outline: none;
   }
 
   ul.autocomplete-result {
     max-height: 200px;
-    overflow: scroll;
+    overflow-y: scroll;
     width: inherit;
     padding: 0;
     background-color: #fff;
@@ -159,6 +194,22 @@ export default {
 
 .flag {
   width: 20px;
+}
+
+.scrollbar {
+  margin: 10px;
+  background-color: #fff;
+}
+
+.scrollbar::-webkit-scrollbar {
+  width: 8px;
+  background-color: $background-color;
+  border-radius: 4px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background-color: $el-color;
+  border-radius: 4px;
 }
 
 </style>
