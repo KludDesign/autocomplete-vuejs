@@ -9,6 +9,7 @@
         autocomplete="off"
         placeholder="Search country"
         v-model="textSearch"
+        @input="onTyping"
         @focus="onVisible = true"
         @blur="blur"
         @keydown.down="onArrowDown"
@@ -51,7 +52,7 @@ export default {
       dataCountries: [],
       onVisible: false,
       arrowCounter: -1,
-      itemHeight: 32
+      liItemHeight: 30
     }
   },
 
@@ -116,13 +117,22 @@ export default {
     // Function used to scroll when using arrow keys
     scrollToItem () {
       if ((this.arrowCounter + 1) > 0) {
-        this.$refs.optionsList.scrollTop = this.arrowCounter * this.itemHeight
+        this.$refs.optionsList.scrollTop = this.arrowCounter * this.liItemHeight
       }
     },
 
     // Function to bold dynamically the typed letters
     boldFilter (value) {
       return `<b>${value.substring(0, this.textSearch.length)}</b>${value.slice(this.textSearch.length)}`
+    },
+
+    // Verify if the list is empty or not and display it if not
+    onTyping () {
+      if (this.filteredCountries.length <= 0) {
+        this.onVisible = false
+      } else {
+        this.onVisible = true
+      }
     }
   },
 
@@ -181,6 +191,12 @@ export default {
       background-color: #fff;
       padding: 5px 0px 5px 10px;
       text-align: left;
+      height: 20px;
+      overflow: hidden;
+
+      span.country-name {
+        margin-left: 10px;
+      }
     }
 
     li.is-active,
@@ -208,10 +224,6 @@ export default {
 .scrollbar::-webkit-scrollbar-thumb {
   background-color: $el-color;
   border-radius: 4px;
-}
-
-.country-name {
-  margin-left: 10px;
 }
 
 </style>
