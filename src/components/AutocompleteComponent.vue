@@ -1,27 +1,34 @@
 <template>
   <div class="autocomplete">
-    <h1>Autocompletion component</h1>
-    <input
-      id="input-search"
-      type="text"
-      v-model="textSearch"
-      @focus="onVisible = true"
-      @blur="blur"
-      autocomplete="off"
-      placeholder="Search..."
-      debounce="500"
-    />
+    <div class="search">
+      <label for="autocomplete-input">Pays</label>
+      <input
+        id="autocomplete-input"
+        class="autocomplete-search"
+        type="text"
+        autocomplete="off"
+        placeholder="Search country"
+        v-model="textSearch"
+        @focus="onVisible = true"
+        @blur="blur"
+        @keydown.down="onArrowDown"
+        @keydown.up="onArrowUp"
+        @keydown.space="onSpace"
+      />
+    </div>
 
     <ul
-
+      class="autocomplete-result"
       v-show="onVisible"
     >
       <li
-        class="country-list"
-        v-for="country in filteredCountries"
+        class="autocomplete-items"
+        :class="{ 'is-active': i === arrowCounter }"
+        v-for="(country, i) in filteredCountries"
+        :key="i"
         @click="setCountry(country.name)"
       >
-        <img class="country-flag" :src="country.flag" :alt="country.name" />
+        <img class="flag" :src="country.flag" :alt="country.name" />
         {{ country.name }}
       </li>
     </ul>
@@ -37,7 +44,8 @@ export default {
     return {
       textSearch: '',
       dataCountries: [],
-      onVisible: false
+      onVisible: false,
+      arrowCounter: -1
     }
   },
 
@@ -62,6 +70,27 @@ export default {
     // Close the list item when clicking out the input fiels
     blur () {
       setTimeout( () => this.onVisible = false, 200) // Need setTimeout in order to have setCountry @click event working
+    },
+
+    // Hover the item below on the list
+    onArrowDown () {
+      if (this.arrowCounter < this.filteredCountries.length) {
+        this.arrowCounter = this.arrowCounter + 1
+      }
+    },
+
+    // Hover the item under on the list
+    onArrowUp () {
+      if (this.arrowCounter > 0) {
+        this.arrowCounter = this.arrowCounter - 1
+      }
+    },
+
+    // Select the coresponding country when clicking on the space barre
+    onSpace () {
+      this.textSearch = this.filteredCountries[this.arrowCounter].name
+      this.onVisible = false
+      this.arrowCounter = -1
     }
   },
 
@@ -82,27 +111,54 @@ export default {
   font-family: Campton;
 }
 
-h1 {
-  color: $text-color;
+.autocomplete {
+  max-width: 500px;
+
+  .search {
+    background-color: #fff;
+    padding: 30px;
+  }
+
+  label {
+    color: $el-color;
+  }
+
+  input[type=text] {
+    width: 100%;
+    margin: 20px 0 0 0;
+    box-sizing: border-box;
+    border: none;
+    border-bottom: 1px solid $el-color;
+  }
+
+  ul.autocomplete-result {
+    max-height: 200px;
+    overflow: scroll;
+    width: inherit;
+    padding: 0;
+    background-color: #fff;
+    margin: -20px 30px 0 30px;
+    -webkit-box-shadow: 0 0 4px 4px #eee;
+    -moz-box-shadow: 0 0 4px 4px #eee;
+    box-shadow: 0 0 4px 4px #eee;
+
+    li.autocomplete-items {
+      cursor: pointer;
+      list-style-type: none;
+      background-color: #fff;
+      padding: 5px 0px 5px 10px;
+      text-align: left;
+    }
+
+    li.is-active,
+    li.autocomplete-items:hover {
+      background-color: $el-color;
+    }
+  }
 }
 
-.country-list {
-  cursor: pointer;
-}
-
-.country-flag {
+.flag {
   width: 20px;
-}
-
-li {
-  list-style-type: none;
-  background-color: #fff;
-  padding: 5px 0px;
-}
-
-ul {
-  height: 200px;
-  overflow: scroll;
 }
 
 </style>
