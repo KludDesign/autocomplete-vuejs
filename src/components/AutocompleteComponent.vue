@@ -1,54 +1,71 @@
-<v></v><template>
+<template>
   <div class="autocomplete">
-    <div class="search">
-      <label for="autocomplete-input">{{ label }}</label>
-      <input
-        id="autocomplete-input"
-        class="autocomplete-search"
-        type="text"
-        autocomplete="off"
-        :placeholder="placeholder"
-        v-model="textSearch"
-        @input="onTyping"
-        @focus="onVisible = true"
-        @blur="blur"
-        @keydown.down="onArrowDown"
-        @keydown.up="onArrowUp"
-        @keydown.space="onSpace"
-      />
+    <!-- Desktop display -->
+    <div class="desktop" v-if="!isMobile()">
+      <div class="search">
+        <label for="autocomplete-input">{{ label }}</label>
+        <input
+          id="autocomplete-input"
+          class="autocomplete-search"
+          type="text"
+          autocomplete="off"
+          :placeholder="placeholder"
+          v-model="textSearch"
+          @input="onTyping"
+          @focus="onVisible = true"
+          @blur="blur"
+          @keydown.down="onArrowDown"
+          @keydown.up="onArrowUp"
+          @keydown.space="onSpace"
+        />
+      </div>
+
+      <ul
+        class="autocomplete-result scrollbar"
+        v-show="onVisible"
+        ref="optionsList"
+      >
+        <!-- Part to modify in case using an other API -->
+        <li
+          class="autocomplete-items"
+          :class="{ 'is-active': i === arrowCounter }"
+          v-for="(item, i) in filteredItems"
+          :key="i"
+          @click="onClick(item.name)"
+        >
+          <img
+            class="image"
+            :src="item.flag"
+            :alt="item.name"
+          />
+          <span class="item-name" v-html="boldFilter(item.name)"></span>
+        </li>
+        <!-- endModifications -->
+      </ul>
     </div>
 
-    <ul
-      class="autocomplete-result scrollbar"
-      v-show="onVisible"
-      ref="optionsList"
-    >
-      <!-- Part to modify in case using an other API -->
-      <li
-        class="autocomplete-items"
-        :class="{ 'is-active': i === arrowCounter }"
-        v-for="(item, i) in filteredItems"
-        :key="i"
-        @click="onClick(item.name)"
-      >
-        <img
-          class="image"
-          :src="item.flag"
-          :alt="item.name"
-        />
-        <span class="item-name" v-html="boldFilter(item.name)"></span>
-      </li>
-      <!-- endModifications -->
-    </ul>
-
+    <!-- Mobile display -->
+    <div class="mobile" v-else>
+      <select id="select-item">
+        <option value="0">Select a country:</option>
+        <option
+          v-for="(item, i) in filteredItems"
+          :value="i + 1"
+        >
+          {{ item.name }}
+        </option>
+      </select>
+    </div>
   </div>
 </template>
 
 <script>
+import { detictingMobileMixin } from '@/plugins/DetictingMobileMixin'
 
 export default {
   name: 'Autocomplete',
   props: ['apiData', 'placeholder', 'label'],
+  mixins: [detictingMobileMixin],
   data () {
     return {
       textSearch: '',
@@ -145,54 +162,75 @@ export default {
 }
 
 .autocomplete {
-  max-width: 500px;
 
-  .search {
-    background-color: #fff;
-    padding: 30px;
-  }
+  .desktop {
+    max-width: 500px;
+    margin: auto;
 
-  label {
-    color: $el-color;
-  }
-
-  input[type=text] {
-    width: 100%;
-    margin: 20px 0 0 0;
-    box-sizing: border-box;
-    border: none;
-    border-bottom: 1px solid $el-color;
-    outline: none;
-  }
-
-  ul.autocomplete-result {
-    max-height: 200px;
-    overflow-y: scroll;
-    width: inherit;
-    padding: 0;
-    background-color: #fff;
-    margin: -20px 30px 0 30px;
-    -webkit-box-shadow: 0 0 4px 4px #eee;
-    -moz-box-shadow: 0 0 4px 4px #eee;
-    box-shadow: 0 0 4px 4px #eee;
-
-    li.autocomplete-items {
-      cursor: pointer;
-      list-style-type: none;
+    .search {
       background-color: #fff;
-      padding: 5px 0px 5px 10px;
-      text-align: left;
-      height: 20px;
-      overflow: hidden;
-
-      span.item-name {
-        margin-left: 10px;
-      }
+      padding: 30px;
     }
 
-    li.is-active,
-    li.autocomplete-items:hover {
-      background-color: $el-color;
+    label {
+      color: $el-color;
+    }
+
+    input[type=text] {
+      width: 100%;
+      margin: 20px 0 0 0;
+      box-sizing: border-box;
+      border: none;
+      border-bottom: 1px solid $el-color;
+      outline: none;
+    }
+
+    ul.autocomplete-result {
+      max-height: 200px;
+      overflow-y: scroll;
+      width: inherit;
+      padding: 0;
+      background-color: #fff;
+      margin: -20px 30px 0 30px;
+      -webkit-box-shadow: 0 0 4px 4px #eee;
+      -moz-box-shadow: 0 0 4px 4px #eee;
+      box-shadow: 0 0 4px 4px #eee;
+
+      li.autocomplete-items {
+        cursor: pointer;
+        list-style-type: none;
+        background-color: #fff;
+        padding: 5px 0px 5px 10px;
+        text-align: left;
+        height: 20px;
+        overflow: hidden;
+
+        span.item-name {
+          margin-left: 10px;
+        }
+      }
+
+      li.is-active,
+      li.autocomplete-items:hover {
+        background-color: $el-color;
+      }
+    }
+  }
+
+  .mobile {
+    width: 50vw;
+    margin: auto;
+    padding: 15px;
+    background-color: #fff;
+
+    select {
+      width: 100%;
+      background-color: #fff;
+      padding: 5px;
+      box-sizing: border-box;
+      border: none;
+      border-bottom: 1px solid $el-color;
+      outline: none;
     }
   }
 }
