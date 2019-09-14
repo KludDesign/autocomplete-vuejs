@@ -4,6 +4,7 @@ module.exports = {
       sass: {
         data: `
         @import "@/assets/styles/_variables.scss";
+        @import "@/assets/styles/_mixins.scss";
         @import "@/assets/fonts/_fonts.scss";
         `
       }

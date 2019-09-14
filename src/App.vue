@@ -25,7 +25,8 @@ export default {
   },
 
   methods: {
-    // Get all the countries information from the API and put in contriesData variable
+    // Get all countries information from the API and
+    // put it in variable to be consumed by the component
     async getContriesData () {
       const response = await RestcountriesApi.getAllContries()
       this.dataCountries = response.data
@@ -35,18 +36,13 @@ export default {
 </script>
 
 <style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
+
+body {
+  background-color: $background-color;
 }
 
 .autocomplete-component {
   margin: auto;
 }
 
-body {
-  background-color: $background-color;
-}
 </style>

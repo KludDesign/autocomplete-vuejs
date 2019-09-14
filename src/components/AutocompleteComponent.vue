@@ -41,6 +41,7 @@
             <span class="item-name" v-html="boldFilter(item.name)"></span>
           </li>
         </ul>
+
       </div>
       <span class="emit-value">{{ emitValue }}</span>
     </div>
@@ -48,7 +49,10 @@
     <!-- Mobile display -->
     <div class="" v-else>
       <div class="mobile">
-        <select id="select-item" v-model="mobileSelectedItem">
+        <select
+          id="select-item"
+          v-model="mobileSelectedItem"
+        >
           <option disabled value="">Select a country:</option>
           <option
             v-for="(item, i) in filteredItems"
@@ -70,6 +74,7 @@ export default {
   name: 'Autocomplete',
   props: ['apiData', 'placeholder', 'label'],
   mixins: [detictingMobileMixin],
+
   data () {
     return {
       textSearch: '',
@@ -81,13 +86,13 @@ export default {
   },
 
   methods: {
-    // Set the input area with the clicked value
+    // Set the input area with the clicked item value
     onClick (item) {
       this.textSearch = item
       this.onVisible = false // Close the item list
     },
 
-    // Hover the item below on the list
+    // Hover the item on the list when using arrow down
     onArrowDown () {
       if (this.arrowCounter < this.filteredItems.length - 1) {
         this.arrowCounter += 1
@@ -95,7 +100,7 @@ export default {
       }
     },
 
-    // Hover the item under on the list
+    // Hover the item on the list when using arrow up
     onArrowUp () {
       if (this.arrowCounter > 0) {
         this.arrowCounter -= 1
@@ -103,19 +108,19 @@ export default {
       }
     },
 
-    // Select the coresponding item when clicking on the space barre
+    // Select the coresponding item when clicking on the space bar
     // Change this value in case using an other API
     onSpace () {
       this.textSearch = this.filteredItems[this.arrowCounter].name
       this.onVisible = false
       this.arrowCounter = -1
-      event.target.blur() // Unfocus the input after selected the element
+      event.target.blur() // Unfocus the input after having selected the element
     },
 
     // Close the list item when clicking out the input fiels
     blur () {
       if (this.filteredItems.length < 1) {
-        // Need setTimeout in order to have onClick @click event working
+        // Need setTimeout in order to have onClick event working
         setTimeout( () =>
           this.textSearch = '',
           this.onVisible = false
@@ -128,7 +133,7 @@ export default {
       this.arrowCounter = -1 // Remove the active item if selected by arrow keys
     },
 
-    // Function used to scroll when using arrow keys
+    // Function used to scroll down / up when using arrow keys
     scrollToItem () {
       if ((this.arrowCounter + 1) > 0) {
         this.$refs.optionsList.scrollTop = this.arrowCounter * this.liItemHeight
@@ -154,11 +159,11 @@ export default {
     // Return the list of filtered items dependening of the input value typed by the user
     filteredItems () {
       return this.apiData.filter( item => {
-        return item.name.toLowerCase().startsWith(this.textSearch.toLowerCase())
+        return item.name.toLowerCase().startsWith(this.textSearch.toLowerCase()) // Change this values in case using an other API
       })
     },
 
-    //Emit a value when the input corresponding to an item
+    // Emit the ISO value when the input corresponding to an existing country
     // Change this values in case using an other API
     emitValue () {
       if (this.filteredItems.length === 1 && this.textSearch.toLowerCase() === this.filteredItems[0].name.toLowerCase()) {
@@ -250,10 +255,8 @@ export default {
 }
 
 .emit-value {
+  @include centerer;
   font-size: 10vw;
-  position: relative;
-  left: 40vw;
-  top: 40vh;
   color: $el-color;
 }
 
