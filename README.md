@@ -23,7 +23,7 @@ Test project of an autocomplete component for VingtCinq company
 Realising this autocomplete component :
 
 <p align="center">
-  ![vingtcinqexo](https://user-images.githubusercontent.com/25175722/64912275-2245a300-d72d-11e9-98d8-0375e413a830.png)
+  <img src="https://user-images.githubusercontent.com/25175722/64912275-2245a300-d72d-11e9-98d8-0375e413a830.png">
 </p>
 
 * A text field invites the user to enter his country.
