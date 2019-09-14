@@ -1,16 +1,35 @@
 <template>
   <div id="app">
-    <AutocompleteComponent class="autocomplete-component"/>
+    <AutocompleteComponent :apiData="dataCountries" label="Pays" placeholder="Search country" class="autocomplete-component"/>
   </div>
 </template>
 
 <script>
 import AutocompleteComponent from './components/AutocompleteComponent.vue'
+import RestcountriesApi from '@/services/RestcountriesApi'
 
 export default {
   name: 'app',
   components: {
     AutocompleteComponent
+  },
+
+  data () {
+    return {
+      dataCountries: []
+    }
+  },
+
+  mounted () {
+    this.getContriesData()
+  },
+
+  methods: {
+    // Get all the countries information from the API and put in contriesData variable
+    async getContriesData () {
+      const response = await RestcountriesApi.getAllContries()
+      this.dataCountries = response.data
+    }
   }
 }
 </script>

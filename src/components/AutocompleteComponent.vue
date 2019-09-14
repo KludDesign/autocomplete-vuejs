@@ -1,13 +1,13 @@
 <v></v><template>
   <div class="autocomplete">
     <div class="search">
-      <label for="autocomplete-input">Pays</label>
+      <label for="autocomplete-input">{{ label }}</label>
       <input
         id="autocomplete-input"
         class="autocomplete-search"
         type="text"
         autocomplete="off"
-        placeholder="Search country"
+        :placeholder="placeholder"
         v-model="textSearch"
         @input="onTyping"
         @focus="onVisible = true"
@@ -23,60 +23,51 @@
       v-show="onVisible"
       ref="optionsList"
     >
+      <!-- Part to modify in case using an other API -->
       <li
         class="autocomplete-items"
         :class="{ 'is-active': i === arrowCounter }"
-        v-for="(country, i) in filteredCountries"
+        v-for="(item, i) in filteredItems"
         :key="i"
-        @click="onClick(country.name)"
+        @click="onClick(item.name)"
       >
         <img
-          class="flag"
-          :src="country.flag"
-          :alt="country.name"
+          class="image"
+          :src="item.flag"
+          :alt="item.name"
         />
-        <span class="country-name" v-html="boldFilter(country.name)"></span>
+        <span class="item-name" v-html="boldFilter(item.name)"></span>
       </li>
+      <!-- endModifications -->
     </ul>
 
   </div>
 </template>
 
 <script>
-import RestcountriesApi from '@/services/RestcountriesApi'
 
 export default {
+  name: 'Autocomplete',
+  props: ['apiData', 'placeholder', 'label'],
   data () {
     return {
       textSearch: '',
-      dataCountries: [],
       onVisible: false,
       arrowCounter: -1,
       liItemHeight: 30
     }
   },
 
-  mounted () {
-    this.getContriesData()
-  },
-
   methods: {
-    // Get all the countries information from the API and put in
-    // the contriesData variable
-    async getContriesData () {
-      const response = await RestcountriesApi.getAllContries()
-      this.dataCountries = response.data
-    },
-
     // Set the input area with the clicked value
-    onClick (country) {
-      this.textSearch = country
-      this.onVisible = false // Close the country list
+    onClick (item) {
+      this.textSearch = item
+      this.onVisible = false // Close the item list
     },
 
     // Hover the item below on the list
     onArrowDown () {
-      if (this.arrowCounter < this.filteredCountries.length - 1) {
+      if (this.arrowCounter < this.filteredItems.length - 1) {
         this.arrowCounter += 1
         this.scrollToItem()
       }
@@ -90,25 +81,25 @@ export default {
       }
     },
 
-    // Select the coresponding country when clicking on the space barre
+    // Select the coresponding item when clicking on the space barre
     onSpace () {
-      this.textSearch = this.filteredCountries[this.arrowCounter].name
-      this.onVisible = false // Close the country list
+      this.textSearch = this.filteredItems[this.arrowCounter].name
+      this.onVisible = false // Close the item list
       this.arrowCounter = -1
       event.target.blur() // Unfocus the input after selected the element
     },
 
     // Close the list item when clicking out the input fiels
     blur () {
-      if (this.filteredCountries.length < 1) {
+      if (this.filteredItems.length < 1) {
         // Need setTimeout in order to have onClick @click event working
         setTimeout( () =>
-          this.textSearch = '', // Emptying the textSearch if the user didn't type an existing country
-          this.onVisible = false // Close the country list
+          this.textSearch = '', // Emptying the textSearch if the user didn't type an existing item
+          this.onVisible = false // Close the item list
         , 200)
       } else {
         setTimeout( () =>
-          this.onVisible = false // Close the country list
+          this.onVisible = false // Close the item list
         , 200)
       }
       this.arrowCounter = -1 // Remove the active item if selected by arrow keys
@@ -128,7 +119,7 @@ export default {
 
     // Verify if the list is empty or not and display it if not
     onTyping () {
-      if (this.filteredCountries.length <= 0) {
+      if (this.filteredItems.length <= 0) {
         this.onVisible = false
       } else {
         this.onVisible = true
@@ -137,10 +128,10 @@ export default {
   },
 
   computed: {
-    // This return the list of filtered countries dependening of the input value typed by the user
-    filteredCountries () {
-      return this.dataCountries.filter( country => {
-        return country.name.toLowerCase().startsWith(this.textSearch.toLowerCase())
+    // This return the list of filtered Items dependening of the input value typed by the user
+    filteredItems () {
+      return this.apiData.filter( item => {
+        return item.name.toLowerCase().startsWith(this.textSearch.toLowerCase())
       })
     }
   }
@@ -194,7 +185,7 @@ export default {
       height: 20px;
       overflow: hidden;
 
-      span.country-name {
+      span.item-name {
         margin-left: 10px;
       }
     }
@@ -206,7 +197,7 @@ export default {
   }
 }
 
-.flag {
+.image {
   height: 12px;
 }
 
