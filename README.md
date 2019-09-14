@@ -34,10 +34,3 @@ Realising this autocomplete component :
 * If the user entered an non-existent country, the field is reset to an empty string when the user clicks outside the field.
 * When the drop-down menu is open, the user can choose his country by pressing the up and down keys on his keyboard and validate by pressing the space bar.
 * On smartphone, when the user presses on the field, he can only choose the country from a drop-down list displayed from a native and classic drop-down.
-
-## Project setup
-```
-npm install
-
-npm run serve
-```
