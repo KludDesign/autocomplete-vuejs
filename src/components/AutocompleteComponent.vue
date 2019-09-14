@@ -1,60 +1,64 @@
 <template>
   <div class="autocomplete">
     <!-- Desktop display -->
-    <div class="desktop" v-if="!isMobile()">
-      <div class="search">
-        <label for="autocomplete-input">{{ label }}</label>
-        <input
-          id="autocomplete-input"
-          class="autocomplete-search"
-          type="text"
-          autocomplete="off"
-          :placeholder="placeholder"
-          v-model="textSearch"
-          @input="onTyping"
-          @focus="onVisible = true"
-          @blur="blur"
-          @keydown.down="onArrowDown"
-          @keydown.up="onArrowUp"
-          @keydown.space="onSpace"
-        />
-      </div>
-
-      <ul
-        class="autocomplete-result scrollbar"
-        v-show="onVisible"
-        ref="optionsList"
-      >
-        <!-- Part to modify in case using an other API -->
-        <li
-          class="autocomplete-items"
-          :class="{ 'is-active': i === arrowCounter }"
-          v-for="(item, i) in filteredItems"
-          :key="i"
-          @click="onClick(item.name)"
-        >
-          <img
-            class="image"
-            :src="item.flag"
-            :alt="item.name"
+    <div v-if="!isMobile()">
+      <div class="desktop">
+        <div class="search">
+          <label for="autocomplete-input">{{ label }}</label>
+          <input
+            id="autocomplete-input"
+            class="autocomplete-search"
+            type="text"
+            autocomplete="off"
+            :placeholder="placeholder"
+            v-model="textSearch"
+            @input="onTyping"
+            @focus="onVisible = true"
+            @blur="blur"
+            @keydown.down="onArrowDown"
+            @keydown.up="onArrowUp"
+            @keydown.space="onSpace"
           />
-          <span class="item-name" v-html="boldFilter(item.name)"></span>
-        </li>
-        <!-- endModifications -->
-      </ul>
+        </div>
+
+        <ul
+          class="autocomplete-result scrollbar"
+          v-show="onVisible"
+          ref="optionsList"
+        >
+          <li
+            class="autocomplete-items"
+            :class="{ 'is-active': i === arrowCounter }"
+            v-for="(item, i) in filteredItems"
+            :key="i"
+            @click="onClick(item.name)"
+          >
+            <img
+              class="image"
+              :src="item.flag"
+              :alt="item.name"
+            />
+            <span class="item-name" v-html="boldFilter(item.name)"></span>
+          </li>
+        </ul>
+      </div>
+      <span class="emit-value">{{ emitValue }}</span>
     </div>
 
     <!-- Mobile display -->
-    <div class="mobile" v-else>
-      <select id="select-item">
-        <option value="0">Select a country:</option>
-        <option
-          v-for="(item, i) in filteredItems"
-          :value="i + 1"
-        >
-          {{ item.name }}
-        </option>
-      </select>
+    <div class="" v-else>
+      <div class="mobile">
+        <select id="select-item" v-model="mobileSelectedItem">
+          <option disabled value="">Select a country:</option>
+          <option
+            v-for="(item, i) in filteredItems"
+            :value="item.alpha2Code"
+          >
+            <span>{{ item.name }}</span>
+          </option>
+        </select>
+      </div>
+      <span class="emit-value">{{ mobileSelectedItem }}</span>
     </div>
   </div>
 </template>
@@ -71,7 +75,8 @@ export default {
       textSearch: '',
       onVisible: false,
       arrowCounter: -1,
-      liItemHeight: 30
+      liItemHeight: 30,
+      mobileSelectedItem: ''
     }
   },
 
@@ -99,9 +104,10 @@ export default {
     },
 
     // Select the coresponding item when clicking on the space barre
+    // Change this value in case using an other API
     onSpace () {
       this.textSearch = this.filteredItems[this.arrowCounter].name
-      this.onVisible = false // Close the item list
+      this.onVisible = false
       this.arrowCounter = -1
       event.target.blur() // Unfocus the input after selected the element
     },
@@ -111,12 +117,12 @@ export default {
       if (this.filteredItems.length < 1) {
         // Need setTimeout in order to have onClick @click event working
         setTimeout( () =>
-          this.textSearch = '', // Emptying the textSearch if the user didn't type an existing item
-          this.onVisible = false // Close the item list
+          this.textSearch = '',
+          this.onVisible = false
         , 200)
       } else {
         setTimeout( () =>
-          this.onVisible = false // Close the item list
+          this.onVisible = false
         , 200)
       }
       this.arrowCounter = -1 // Remove the active item if selected by arrow keys
@@ -145,11 +151,19 @@ export default {
   },
 
   computed: {
-    // This return the list of filtered Items dependening of the input value typed by the user
+    // Return the list of filtered items dependening of the input value typed by the user
     filteredItems () {
       return this.apiData.filter( item => {
         return item.name.toLowerCase().startsWith(this.textSearch.toLowerCase())
       })
+    },
+
+    //Emit a value when the input corresponding to an item
+    // Change this values in case using an other API
+    emitValue () {
+      if (this.filteredItems.length === 1 && this.textSearch.toLowerCase() === this.filteredItems[0].name.toLowerCase()) {
+        return this.filteredItems[0].alpha2Code
+      }
     }
   }
 }
@@ -233,6 +247,14 @@ export default {
       outline: none;
     }
   }
+}
+
+.emit-value {
+  font-size: 10vw;
+  position: relative;
+  left: 40vw;
+  top: 40vh;
+  color: $el-color;
 }
 
 .image {
