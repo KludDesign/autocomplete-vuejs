@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <AutocompleteComponent :apiData="dataCountries" label="Country" placeholder="Search country" class="autocomplete-component"/>
+    <AutocompleteComponent :apiData="dataCountries" label="Country" placeholder="Enter your country" class="autocomplete-component"/>
   </div>
 </template>
 
