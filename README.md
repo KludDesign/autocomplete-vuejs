@@ -10,7 +10,7 @@ Test project of an autocomplete component for VingtCinq company
 * Quality of comments, naming of functions and variables
 * The organization of the Git repository
 
-## Datas
+## Given datas
 
 * Elements color : #94bbdc
 * Background color : #f2f5f7
@@ -22,7 +22,9 @@ Test project of an autocomplete component for VingtCinq company
 
 Realising this autocomplete component :
 
-![vingtcinqexo](https://user-images.githubusercontent.com/25175722/64912275-2245a300-d72d-11e9-98d8-0375e413a830.png)
+<p align="center">
+  ![vingtcinqexo](https://user-images.githubusercontent.com/25175722/64912275-2245a300-d72d-11e9-98d8-0375e413a830.png)
+</p>
 
 * A text field invites the user to enter his country.
 * When clicking on the text field, a drop-down menu is displayed with the list of countries. The drop-down menu is scrollable.
