@@ -47,7 +47,7 @@
     </div>
 
     <!-- Mobile display -->
-    <div class="" v-else>
+    <div v-else>
       <div class="mobile">
         <select
           id="select-item"
@@ -176,15 +176,13 @@ export default {
 
 <style lang="scss" scoped>
 
-* {
-  font-family: Campton;
-}
-
 .autocomplete {
+  font-family: $font-family-global;
 
   .desktop {
     max-width: 500px;
     margin: auto;
+    @include scrollbar ($background-color, $global-color);
 
     .search {
       background-color: #fff;
@@ -192,15 +190,17 @@ export default {
     }
 
     label {
-      color: $el-color;
+      color: $global-color;
+      font-size: $font-size-medium;
     }
 
     input[type=text] {
+      font-size: $font-size-medium;
       width: 100%;
       margin: 20px 0 0 0;
       box-sizing: border-box;
       border: none;
-      border-bottom: 1px solid $el-color;
+      border-bottom: 1px solid $global-color;
       outline: none;
     }
 
@@ -224,6 +224,10 @@ export default {
         height: 20px;
         overflow: hidden;
 
+        img.image {
+          height: 12px;
+        }
+
         span.item-name {
           margin-left: 10px;
         }
@@ -231,7 +235,7 @@ export default {
 
       li.is-active,
       li.autocomplete-items:hover {
-        background-color: $el-color;
+        background-color: $global-color;
       }
     }
   }
@@ -248,7 +252,7 @@ export default {
       padding: 5px;
       box-sizing: border-box;
       border: none;
-      border-bottom: 1px solid $el-color;
+      border-bottom: 1px solid $global-color;
       outline: none;
     }
   }
@@ -257,27 +261,7 @@ export default {
 .emit-value {
   @include centerer;
   font-size: 10vw;
-  color: $el-color;
-}
-
-.image {
-  height: 12px;
-}
-
-.scrollbar {
-  margin: 10px;
-  background-color: #fff;
-}
-
-.scrollbar::-webkit-scrollbar {
-  width: 8px;
-  background-color: $background-color;
-  border-radius: 4px;
-}
-
-.scrollbar::-webkit-scrollbar-thumb {
-  background-color: $el-color;
-  border-radius: 4px;
+  color: $global-color;
 }
 
 </style>

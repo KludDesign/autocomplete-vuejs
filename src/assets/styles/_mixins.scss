@@ -1,6 +1,26 @@
+// Globals mixins
 @mixin centerer {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+// Local mixin for AutocompleteComponent
+@mixin scrollbar ($scroll-color, $thumb-color) {
+  .scrollbar {
+    margin: 10px;
+    background-color: #fff;
+  }
+
+  .scrollbar::-webkit-scrollbar {
+    width: 8px;
+    background-color: $scroll-color;
+    border-radius: 4px;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background-color: $thumb-color;
+    border-radius: 4px;
+  }
 }

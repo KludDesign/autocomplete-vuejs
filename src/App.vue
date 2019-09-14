@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <AutocompleteComponent :apiData="dataCountries" label="Country" placeholder="Enter your country" class="autocomplete-component"/>
+    <AutocompleteComponent :apiData="dataCountries" label="Country" placeholder="Select your country" class="autocomplete-component"/>
   </div>
 </template>
 
@@ -39,10 +39,10 @@ export default {
 
 body {
   background-color: $background-color;
-}
 
-.autocomplete-component {
-  margin: auto;
+  .autocomplete-component {
+    margin: auto;
+  }
 }
 
 </style>
