@@ -43,7 +43,6 @@
         </ul>
 
       </div>
-      <span class="emit-value">{{ emitValue }}</span>
     </div>
 
     <!-- Mobile display -->
@@ -90,6 +89,7 @@ export default {
     onClick (item) {
       this.textSearch = item
       this.onVisible = false // Close the item list
+      this.emitValue()
     },
 
     // Hover the item on the list when using arrow down
@@ -115,6 +115,7 @@ export default {
       this.onVisible = false
       this.arrowCounter = -1
       event.target.blur() // Unfocus the input after having selected the element
+      this.emitValue()
     },
 
     // Close the list item when clicking out the input fiels
@@ -152,6 +153,15 @@ export default {
       } else {
         this.onVisible = true
       }
+      this.emitValue()
+    },
+
+    // Emit the ISO value when the input corresponding to an existing country
+    // Change this values in case using an other API
+    emitValue () {
+      if (this.filteredItems.length === 1 && this.textSearch.toLowerCase() === this.filteredItems[0].name.toLowerCase()) {
+        this.$emit('isoCode', this.filteredItems[0].alpha2Code)
+      }
     }
   },
 
@@ -161,14 +171,6 @@ export default {
       return this.apiData.filter( item => {
         return item.name.toLowerCase().startsWith(this.textSearch.toLowerCase()) // Change this values in case using an other API
       })
-    },
-
-    // Emit the ISO value when the input corresponding to an existing country
-    // Change this values in case using an other API
-    emitValue () {
-      if (this.filteredItems.length === 1 && this.textSearch.toLowerCase() === this.filteredItems[0].name.toLowerCase()) {
-        return this.filteredItems[0].alpha2Code
-      }
     }
   }
 }
@@ -256,12 +258,6 @@ export default {
       outline: none;
     }
   }
-}
-
-.emit-value {
-  @include centerer;
-  font-size: 10vw;
-  color: $global-color;
 }
 
 </style>

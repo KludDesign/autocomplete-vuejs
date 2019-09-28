@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <AutocompleteComponent :apiData="dataCountries" label="Country" placeholder="Select your country" class="autocomplete-component"/>
+    <AutocompleteComponent @isoCode="getIsoCode($event)" :apiData="dataCountries" label="Country" placeholder="Select your country" class="autocomplete-component"/>
+    <span class="emit-value">{{ isoCode }}</span>
   </div>
 </template>
 
@@ -16,7 +17,8 @@ export default {
 
   data () {
     return {
-      dataCountries: []
+      dataCountries: [],
+      isoCode: ''
     }
   },
 
@@ -30,6 +32,10 @@ export default {
     async getContriesData () {
       const response = await RestcountriesApi.getAllContries()
       this.dataCountries = response.data
+    },
+
+    getIsoCode(value) {
+      this.isoCode = value
     }
   }
 }
@@ -43,6 +49,13 @@ body {
   .autocomplete-component {
     margin: auto;
   }
+}
+
+.emit-value {
+  @include centerer;
+  font-size: 10vw;
+  color: $global-color;
+  font-family: $font-family-global;
 }
 
 </style>
